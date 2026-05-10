@@ -31,7 +31,7 @@ const About = () => {
     <div className="w-screen h-[260vh] bg-[#1F1E24] text-white px-[5%] py-10">
       {/* Nav */}
       <nav className="flex items-center gap-4 mb-10 text-zinc-400">
-        <Link to="/" className="hover:text-[#6556CD] transition ri-home-line text-xl" />
+        <Link to="/home" className="hover:text-[#6556CD] transition ri-home-line text-xl" />
         <span>/</span>
         <span className="text-white font-semibold">About</span>
       </nav>

@@ -2,9 +2,9 @@ import { useState ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../Utils/axios";
 import Loading from "../Components/Loading"
-import Cards from "./pertials/Cards";
-import Topnav from "./pertials/Topnav"
-import Dropdown from "./pertials/Dropdown";
+import Cards from "./partials/Cards";
+import Topnav from "./partials/Topnav"
+import Dropdown from "./partials/Dropdown";
 import InfiniteScroll  from 'react-infinite-scroll-component';
 const Popular =()=>{
     document.title="DB | Popular";

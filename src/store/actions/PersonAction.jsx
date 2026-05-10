@@ -1,6 +1,6 @@
-export { removeperson } from "../redurecs/PeopleSlice";
+export { removeperson } from "../reducers/PeopleSlice";
 import axios from "../../Utils/axios";
-import { loadperson } from "../redurecs/PeopleSlice";
+import { loadperson } from "../reducers/PeopleSlice";
 export const asyncloadperson = (id) => async (dispatch, getstate) => {
   try {
     const detail = await axios.get(`/person/${id}`);

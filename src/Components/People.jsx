@@ -2,14 +2,14 @@ import { useState ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../Utils/axios";
 import Loading from "../Components/Loading"
-import Cards from "./pertials/Cards";
-import Topnav from "./pertials/Topnav"
+import Cards from "./partials/Cards";
+import Topnav from "./partials/Topnav"
 import InfiniteScroll  from 'react-infinite-scroll-component';
 
 const People =()=>{
-     document.title="DB | person";
+     document.title="DB - person";
     const navigate = useNavigate();
-    const [category, setCategory] = useState("popular");
+    const [category] = useState("popular");
     const [person, setPerson]= useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore]=useState(true);
@@ -69,7 +69,6 @@ const People =()=>{
                 hasMore={hasMore}
                 loader={<h1>Loading... </h1>}>
                 <Cards data={person} title="person" />
-
             </InfiniteScroll>
         </div>
     ):(

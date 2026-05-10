@@ -1,13 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../Utils/axios";
 import Loading from "../Components/Loading"
-import Cards from "./pertials/Cards";
-import Topnav from "./pertials/Topnav"
-import Dropdown from "./pertials/Dropdown";
+import Cards from "./partials/Cards";
+import Topnav from "./partials/Topnav"
+import Dropdown from "./partials/Dropdown";
 import InfiniteScroll  from 'react-infinite-scroll-component';
 const Tvshows=()=>{
-    document.title="DB | Tv Shows";
+    document.title="DB - Tv Shows";
     const navigate = useNavigate();
     const [category, setCategory] = useState("airing_today");
     const [tv, setTv]= useState([]);
@@ -51,7 +52,7 @@ const Tvshows=()=>{
                         onClick={() => navigate(-1)}
                         className="hover:text-[#6556CD] ri-arrow-left-line"
                     ></i>{" "}
-                    Tv Shows <small className="ml-2 text-sn text-zinc-600">({category})</small>
+                    Tv Shows <small className="text-sm text-zinc-600">({category.toUpperCase()})</small>
                 </h1>
                 <div className="flex items-center w-[80%]">
                     <Topnav />

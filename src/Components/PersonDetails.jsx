@@ -6,9 +6,9 @@ import {
   useParams,
   Link
 } from "react-router-dom";
-import HorizontalCards from "./pertials/HorizontalCards";
+import HorizontalCards from "./partials/HorizontalCards";
 import Loading from "./Loading";
-import Dropdown from "./pertials/Dropdown";
+import Dropdown from "./partials/Dropdown";
 
 const PersonDetails = () => {
   const navigate = useNavigate();
@@ -23,12 +23,6 @@ const PersonDetails = () => {
       dispatch(removeperson());
     };
   }, [id]);
-  if (!info || !info.detail)
-    return (
-      <div className="text-white">
-        <Loading />
-      </div>
-    );
   return info ? (
     <div className="px-[10%] w-screen h-[175vh] bg-[#1F1E24]  ">
       {/* part 1navigation */}

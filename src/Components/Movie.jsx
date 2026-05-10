@@ -2,12 +2,12 @@ import { useState ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../Utils/axios";
 import Loading from "../Components/Loading"
-import Cards from "./pertials/Cards";
-import Topnav from "./pertials/Topnav"
-import Dropdown from "./pertials/Dropdown";
+import Cards from "./partials/Cards";
+import Topnav from "./partials/Topnav"
+import Dropdown from "./partials/Dropdown";
 import InfiniteScroll  from 'react-infinite-scroll-component';
 const Movie=()=>{
-    document.title="Movix | Movie";
+    document.title="Movix - Movie";
     const navigate = useNavigate();
     const [category, setCategory] = useState("now_playing");
     const [movie, setMovie]= useState([]);
@@ -53,7 +53,7 @@ const Movie=()=>{
                     ></i>{" "}
                     Movie <small className="ml-2 text-sn text-zinc-600">({category})</small>
                 </h1>
-                <div className="flex items-center w-[80%]">
+                <div className=" flex items-center w-[80%]">
                     <Topnav />
                     <Dropdown
                         title='Category'

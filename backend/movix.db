@@ -1,0 +1,82 @@
+CREATE DATABASE Movix;
+USE Movix;
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  email VARCHAR(150) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,  -- never store plain passwords!
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE watchlist (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  media_id INT NOT NULL,         -- TMDB movie or show ID
+  media_type ENUM('movie','tv') NOT NULL,
+  added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  UNIQUE KEY unique_watchlist (user_id, media_id, media_type)
+);
+CREATE TABLE reviews (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  media_id INT NOT NULL,
+  media_type ENUM('movie','tv') NOT NULL,
+  rating TINYINT CHECK (rating BETWEEN 1 AND 10),
+  review_text TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+-- 2. USER GENRE PREFERENCES (Register Step 2)
+CREATE TABLE user_genres (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  genre VARCHAR(50) NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  UNIQUE KEY unique_user_genre (user_id, genre)
+);
+
+-- 3. CONTACT MESSAGES (ContactUs page)
+CREATE TABLE contact_messages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL,
+  subject VARCHAR(200),
+  message TEXT NOT NULL,
+  submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4. TEAM MEMBERS (About page — admin-editable)
+CREATE TABLE team_members (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  role VARCHAR(100) NOT NULL,
+  icon VARCHAR(100),
+  description TEXT,
+  display_order INT DEFAULT 0
+);
+
+-- 5. FEATURES (About page — admin-editable)
+CREATE TABLE features (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  icon VARCHAR(100),
+  title VARCHAR(100) NOT NULL,
+  description TEXT,
+  display_order INT DEFAULT 0
+);
+
+-- Seed team members from your About.jsx
+INSERT INTO team_members (name, role, icon, description, display_order) VALUES
+('Saurabh Tiwari', 'Full Stack Developer', 'ri-code-s-slash-line', 'Built the core React architecture and Redux state management.', 1),
+('Deepak Bugla', 'UI/UX Designer', 'ri-palette-line', 'Designed the cinematic interface and user experience flows.', 2),
+('Deepanshu Panday', 'API Integration', 'ri-links-line', 'Integrated TMDB API and handled data fetching pipelines.', 3);
+
+-- Seed features from your About.jsx
+INSERT INTO features (icon, title, description, display_order) VALUES
+('ri-film-line', 'Movie Details', 'Full details including ratings, genres, runtime, tagline, and trailer.', 1),
+('ri-tv-line', 'TV Shows', 'Season-by-season breakdown with all episode info and air dates.', 2),
+('ri-user-star-line', 'Celebrity Profiles', 'Biography, social links, and complete filmography for every actor.', 3),
+('ri-store-line', 'Watch Providers', 'Find where to stream, rent, or buy — available for Indian region.', 4),
+('ri-search-line', 'Smart Search', 'Search across movies, TV shows, and people all at once.', 5),
+('ri-play-circle-line', 'Trailer Player', 'Watch official trailers directly in the app without leaving.', 6);

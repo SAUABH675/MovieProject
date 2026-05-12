@@ -1,83 +1,79 @@
-import { useState ,useEffect} from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "../Utils/axios";
-import Loading from "../Components/Loading"
+import Loading from "../Components/Loading";
 import Cards from "./partials/Cards";
-import Topnav from "./partials/Topnav"
+import Topnav from "./partials/Topnav";
 import Dropdown from "./partials/Dropdown";
-import InfiniteScroll  from 'react-infinite-scroll-component';
-const Popular =()=>{
-    document.title="DB | Popular";
-    const navigate = useNavigate();
-    const [category, setCategory] = useState("movie");
-    const [popular, setPopular]= useState([]);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore]=useState(true);
-    
+import InfiniteScroll from "react-infinite-scroll-component";
 
-    const GetPopular = async () => {
-        try {
-            const { data } = await axios.get(`${category}/popular?page=${page}`);
-            if(data.results.length>0){
-                setPopular((prevState=>[...prevState,...data.results]));
-                setPage(page+1);
-            }else{
-                setHasMore(false);
-            }
-            
+const Popular = () => {
+  document.title = "Movix | Popular";
+  const navigate = useNavigate();
+  const [category, setCategory] = useState("movie");
+  const [popular, setPopular] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
-        } catch (error) {
-            console.log("Error:", error);
-        };
-    };
-
-    const refershHandler=()=>{
-        if(popular.length ===0){
-            GetPopular();
-        }else{
-            setPage(1);
-            setPopular([]);
-            GetPopular();
-        }
+  const GetPopular = async () => {
+    try {
+      const { data } = await axios.get(`${category}/popular?page=${page}`);
+      if (data.results.length > 0) {
+        setPopular((prev) => [...prev, ...data.results]);
+        setPage(page + 1);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.log("Error:", error);
     }
-    useEffect(() => {
-        refershHandler();
-    }, [category]);
+  };
 
-    return popular.length>0?(
-        <div className=" w-screen h-screen ">
-            <div className="px-[5%] w-full flex items-center justify-between">
-                <h1 className=" text-2xl text-zinc-400 font-semibold">
-                    <i
-                        onClick={() => navigate(-1)}
-                        className="hover:text-[#6556CD] ri-arrow-left-line"
-                    ></i>{" "}
-                    Popular
-                </h1>
-                <div className="flex items-center w-[80%]">
-                    <Topnav />
-                    <Dropdown
-                        title='Category'
-                        options={["tv", "movie"]}
-                        func={(e) => setCategory(e.target.value)} />
-                    <div className="w-[2%]"></div>
-                    
-                </div>
+  const refreshHandler = () => {
+    if (popular.length === 0) {
+      GetPopular();
+    } else {
+      setPage(1);
+      setPopular([]);
+      GetPopular();
+    }
+  };
 
-            </div>
+  useEffect(() => {
+    refreshHandler();
+  }, [category]);
 
-            <InfiniteScroll
-                dataLength={popular.length}
-                next={GetPopular}
-                hasMore={hasMore}
-                loader={<h1>Loading... </h1>}>
-                <Cards data={popular} title={category} />
-
-            </InfiniteScroll>
+  return popular.length > 0 ? (
+    <div className="w-full min-h-screen bg-[#1F1E24]">
+      <div className="px-4 sm:px-[5%] w-full flex flex-col sm:flex-row items-start sm:items-center justify-between py-3 gap-3 pl-16 md:pl-4 sm:pl-[5%]">
+        <h1 className="text-xl sm:text-2xl text-zinc-400 font-semibold flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="w-8 h-8 rounded-full hover:bg-[#6556CD] flex items-center justify-center transition-all duration-300 cursor-pointer">
+            <i className="ri-arrow-left-line text-lg" />
+          </button>
+          <Link to="/home" className="w-8 h-8 rounded-full hover:bg-[#6556CD] flex items-center justify-center transition-all duration-300">
+            <i className="ri-home-line text-lg" />
+          </Link>
+          Popular
+        </h1>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center w-full sm:w-[80%] gap-2 sm:gap-0">
+          <Topnav />
+          <div className="flex gap-2 justify-end px-4 sm:px-0">
+            <Dropdown title="Category" options={["tv", "movie"]} func={(e) => setCategory(e.target.value)} />
+          </div>
         </div>
-    ):(
-        <Loading />
-    );
+      </div>
+      <InfiniteScroll
+        dataLength={popular.length}
+        next={GetPopular}
+        hasMore={hasMore}
+        loader={<h1 className="text-center text-zinc-400 py-4">Loading...</h1>}
+      >
+        <Cards data={popular} title={category} />
+      </InfiniteScroll>
+    </div>
+  ) : (
+    <Loading />
+  );
 };
 
 export default Popular;

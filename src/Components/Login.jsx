@@ -3,21 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, clearMessages } from "../store/reducers/authSlice";
 
-const OAUTH_CONFIG = {
-  google: {
-    clientId: "YOUR_GOOGLE_CLIENT_ID",
-    redirectUri: "http://localhost:5173/auth/google/callback",
-    scope: "openid email profile",
-  },
-};
-
 const loginWithGoogle = () => {
-  const { clientId, redirectUri, scope } = OAUTH_CONFIG.google;
   const params = new URLSearchParams({
-    client_id: clientId,
-    redirect_uri: redirectUri,
+    client_id: "1087310988770-slvi0gakqc2kj62vhdedfmbtps8sb4pu.apps.googleusercontent.com",
+    redirect_uri: "http://localhost:5173/auth/google/callback",
     response_type: "code",
-    scope,
+    scope: "openid email profile",
     access_type: "offline",
     prompt: "select_account",
   });
@@ -25,27 +16,26 @@ const loginWithGoogle = () => {
 };
 
 const Login = () => {
-  const navigate  = useNavigate();
-  const dispatch  = useDispatch();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { loading, error: apiError, user } = useSelector((state) => state.auth);
 
-  const [form, setForm]       = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [showPass, setShowPass] = useState(false);
   const [focused, setFocused] = useState("");
-  const [errors, setErrors]   = useState({});
+  const [errors, setErrors] = useState({});
 
-  // Redirect to home after successful login
   useEffect(() => {
     if (user) {
       dispatch(clearMessages());
-      navigate("/home");
+      navigate("/home", { replace: true });
     }
-  }, [user, navigate, dispatch]);
+  }, [user]);
 
   const validate = () => {
     const e = {};
     if (!form.email.includes("@")) e.email = "Enter a valid email";
-    if (form.password.length < 6)  e.password = "Password must be at least 6 characters";
+    if (form.password.length < 6) e.password = "Password must be at least 6 characters";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -53,7 +43,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    dispatch(loginUser({ email: form.email, password: form.password }));
+    const result = await dispatch(loginUser({ email: form.email, password: form.password }));
+    if (loginUser.fulfilled.match(result)) {
+      navigate("/home", { replace: true });
+    }
   };
 
   const socialButtons = [
@@ -65,6 +58,20 @@ const Login = () => {
 
       {/* Left cinematic panel */}
       <div className="flex-1 relative flex-col justify-end p-16 overflow-hidden hidden md:flex">
+
+        {/* ── Back to Home button ── */}
+        <Link
+          to="/home"
+          className="absolute top-6 left-6 z-[3] flex items-center gap-2 text-white/50 hover:text-white transition-all duration-300 text-sm group"
+        >
+          <div className="w-8 h-8 rounded-full bg-white/[0.08] group-hover:bg-[#6556CD] flex items-center justify-center transition-all duration-300">
+            <i className="ri-arrow-left-line text-sm" />
+          </div>
+          <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 text-sm font-medium">
+            Back to Home
+          </span>
+        </Link>
+
         <div
           className="absolute inset-0 z-[1]"
           style={{
@@ -93,8 +100,10 @@ const Login = () => {
 
         <div className="relative z-[2]">
           <div className="flex gap-2 flex-wrap mb-8">
-            {["Action","Drama","Sci-Fi","Thriller","Comedy","Horror"].map((g) => (
-              <span key={g} className="text-[0.7rem] text-white/50 border border-white/10 px-3 py-1 rounded-full tracking-widest uppercase">{g}</span>
+            {["Action", "Drama", "Sci-Fi", "Thriller", "Comedy", "Horror"].map((g) => (
+              <span key={g} className="text-[0.7rem] text-white/50 border border-white/10 px-3 py-1 rounded-full tracking-widest uppercase">
+                {g}
+              </span>
             ))}
           </div>
           <div className="text-white text-[5.5rem] leading-none tracking-[6px] font-black mb-2"
@@ -107,7 +116,8 @@ const Login = () => {
           <div className="flex gap-10">
             {[{ number: "10K+", label: "Titles" }, { number: "4K", label: "Quality" }, { number: "50+", label: "Genres" }].map((s) => (
               <div key={s.label} className="flex flex-col">
-                <span className="text-[#6556CD] text-[2.2rem] leading-none tracking-[2px]" style={{ fontFamily: "'Bebas Neue', cursive" }}>{s.number}</span>
+                <span className="text-[#6556CD] text-[2.2rem] leading-none tracking-[2px]"
+                  style={{ fontFamily: "'Bebas Neue', cursive" }}>{s.number}</span>
                 <span className="text-white/35 text-[0.72rem] uppercase tracking-[2px] mt-1">{s.label}</span>
               </div>
             ))}
@@ -117,6 +127,14 @@ const Login = () => {
 
       {/* Right login panel */}
       <div className="w-full md:w-[480px] min-h-screen bg-[#111118] border-l border-[rgba(101,86,205,0.15)] flex flex-col justify-center px-12 py-14 relative z-[1]">
+
+        {/* Mobile back button */}
+        <Link
+          to="/home"
+          className="flex md:hidden items-center gap-2 text-white/50 hover:text-white mb-8 text-sm transition-all duration-300"
+        >
+          <i className="ri-arrow-left-line" /> Back to Home
+        </Link>
 
         <h1 className="text-white text-[2.8rem] leading-none tracking-[3px] mb-1"
           style={{ fontFamily: "'Bebas Neue', cursive" }}>
@@ -134,7 +152,6 @@ const Login = () => {
         )}
 
         <form onSubmit={handleSubmit}>
-
           {/* Email */}
           <div className="mb-5">
             <label className={`block text-[0.7rem] font-medium uppercase tracking-[2px] mb-2 transition-colors duration-300 ${focused === "email" ? "text-[#6556CD]" : "text-white/40"}`}>
@@ -243,7 +260,6 @@ const Login = () => {
             Create account
           </Link>
         </p>
-
       </div>
     </div>
   );
